@@ -3,12 +3,15 @@ package com.example.peter.test;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Browser;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
@@ -24,6 +27,9 @@ import android.content.Context;
 
 public class MainActivity extends ActionBarActivity {
     TextView outputText;
+    ProgressBar myProgressBar;
+    int myProgress = 0;
+    Handler myHandle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +48,11 @@ public class MainActivity extends ActionBarActivity {
 
         Button buttonStop = (Button)findViewById(R.id.button2);
         buttonStop.setOnClickListener(stopListener); // Register the onClick listener with the implementation above
+        myProgressBar = (ProgressBar)findViewById(R.id.progressBar);
+        myProgressBar.setProgress(myProgress);
+
+
+
     }
 
     //Create an anonymous implementation of OnClickListener
@@ -129,21 +140,41 @@ public class MainActivity extends ActionBarActivity {
         }
     }
     public void read_history(){
-        StringBuffer output = new StringBuffer();
-        String Title = Browser.BookmarkColumns.TITLE;
-        String URL   = Browser.BookmarkColumns.URL;
-
-        ContentResolver contentResolver = getContentResolver();
-        Cursor cursor = contentResolver.query(android.provider.Browser.BOOKMARKS_URI, null,null, null, null);
-        if (cursor.getCount() > 0) {
-           int titleIdx = cursor.getColumnIndex(Title);
-           int urlIdx = cursor.getColumnIndex(URL);
-            while (cursor.moveToNext()) {
-                output.append("\nTitle:" +cursor.getString(titleIdx) );
-                output.append("\nURL:" + cursor.getString(urlIdx));
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                while(myProgress<100){
+                    try{
+                        StringBuffer output = new StringBuffer();
+                        String Title = Browser.BookmarkColumns.TITLE;
+                        String URL   = Browser.BookmarkColumns.URL;
+                        ContentResolver contentResolver = getContentResolver();
+                        Cursor cursor = contentResolver.query(android.provider.Browser.BOOKMARKS_URI, null,null, null, null);
+                        int count = 0;
+                        count = cursor.getCount();
+                        if (count > 0) {
+                            int titleIdx = cursor.getColumnIndex(Title);
+                            int urlIdx = cursor.getColumnIndex(URL);
+                            while (cursor.moveToNext()) {
+                                myHandle.sendMessage(myHandle.obtainMessage());
+                                output.append("\nTitle:" +cursor.getString(titleIdx) );
+                                output.append("\nURL:" + cursor.getString(urlIdx));
+                            }
+                            outputText.setText(output);
+                        }
+                    }catch(Throwable t){
+                    }
+                }
             }
-            outputText.setText(output);
-        }
+        }).start();
+        myHandle = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                myProgress++;
+                myProgressBar.setProgress(myProgress);
+            }
+        };
+
 
     }
     @Override

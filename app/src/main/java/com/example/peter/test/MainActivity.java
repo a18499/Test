@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.content.Context;
 import android.view.View.OnClickListener;
 import android.view.View;
+import android.os.Debug;
 import android.util.Log;
 import android.content.pm.PackageManager;
 import android.content.ComponentName;
@@ -42,6 +43,16 @@ public class MainActivity extends ActionBarActivity {
 
         Button buttonStop = (Button)findViewById(R.id.button2);
         buttonStop.setOnClickListener(stopListener); // Register the onClick listener with the implementation above
+        if(Debug.isDebuggerConnected()){
+            System.out.println(Debug.isDebuggerConnected());
+            System.out.println("Debugger is Connected");
+        }
+        else
+        {
+            System.out.println(Debug.isDebuggerConnected());
+            System.out.println("Debugger is not Connected");
+        }
+        System.loadLibrary("JniTest");
     }
 
     //Create an anonymous implementation of OnClickListener

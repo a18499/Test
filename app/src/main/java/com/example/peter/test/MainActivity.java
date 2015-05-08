@@ -3,12 +3,15 @@ package com.example.peter.test;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Browser;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
@@ -25,6 +28,9 @@ import android.content.Context;
 
 public class MainActivity extends ActionBarActivity {
     TextView outputText;
+    ProgressBar myProgressBar;
+    int myProgress = 0;
+    Handler myHandle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

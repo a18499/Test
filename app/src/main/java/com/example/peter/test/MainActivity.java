@@ -28,27 +28,37 @@ import android.content.Context;
 
 public class MainActivity extends ActionBarActivity {
     TextView outputText;
+    TextView outputText2;
     ProgressBar myProgressBar;
     int myProgress = 0;
     Handler myHandle;
+    static {
+        System.loadLibrary("JniDemo");
+    }
+    public native String getStringFromNative();
+    private native int add(int a, int b);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Context context = getApplicationContext();
 
-        CharSequence text = "Hello toast! App laungh";
+        CharSequence text = getStringFromNative();
         int duration = Toast.LENGTH_SHORT;
-
+        int anser = add(5,6);
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
 
         outputText = (TextView) findViewById(R.id.textView2);
+        outputText2 = (TextView) findViewById(R.id.textView);
         Button buttonStart = (Button)findViewById(R.id.button);
         buttonStart.setOnClickListener(startListener); // Register the onClick listener with the implementation above
 
         Button buttonStop = (Button)findViewById(R.id.button2);
         buttonStop.setOnClickListener(stopListener); // Register the onClick listener with the implementation above
+
+        outputText.setText("Anser = " + anser);
+        outputText2.setText(text);
         if(Debug.isDebuggerConnected()){
             System.out.println(Debug.isDebuggerConnected());
             System.out.println("Debugger is Connected");
@@ -58,7 +68,7 @@ public class MainActivity extends ActionBarActivity {
             System.out.println(Debug.isDebuggerConnected());
             System.out.println("Debugger is not Connected");
         }
-        System.loadLibrary("JniTest");
+
     }
 
     //Create an anonymous implementation of OnClickListener

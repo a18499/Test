@@ -1,6 +1,7 @@
 package com.example.peter.test;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
@@ -45,7 +46,7 @@ public class MainActivity extends ActionBarActivity {
 
         CharSequence text = getStringFromNative();
         int duration = Toast.LENGTH_SHORT;
-        int anser = add(5,6);
+        int anser = add(5, 6);
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
 
@@ -56,7 +57,8 @@ public class MainActivity extends ActionBarActivity {
 
         Button buttonStop = (Button)findViewById(R.id.button2);
         buttonStop.setOnClickListener(stopListener); // Register the onClick listener with the implementation above
-
+        Button buttonIntent = (Button)findViewById(R.id.button3);
+        buttonIntent.setOnClickListener(intentLinstener);
         outputText.setText("Anser = " + anser);
         outputText2.setText(text);
         if(Debug.isDebuggerConnected()){
@@ -80,18 +82,18 @@ public class MainActivity extends ActionBarActivity {
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
             read_history();
-            // PackageManager p = getPackageManager();
-            // p.setComponentEnabledSetting(getComponentName(),
-            //         PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-            //         PackageManager.DONT_KILL_APP);
-           // AccountManager accountManager = AccountManager.get(context);
-            // 取得指定 type 的 Account
-            //Account[] accounts = accountManager.getAccountsByType("com.google");
-            //for(Account account : accounts){
-            //    Log.i("--Get Account Example--", account.name);
-            //    Log.i("--Get Account Example--", account.type);
-           // }
-
+        }
+    };
+    //Create an anonymous implementation of OnClickListener
+    private OnClickListener intentLinstener = new OnClickListener() {
+        public void onClick(View v) {
+            Context context = getApplicationContext();
+            CharSequence text = "onClick() called - Intent button";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            Intent intent = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:021-80961111"));
+            startActivity(intent);
         }
     };
 

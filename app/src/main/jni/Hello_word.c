@@ -17,7 +17,7 @@
         close(fd2);
     }
     else{
-        printf("file create failed...\n"");
+        printf("file create failed...\n");
     }
     fd = open("/data/local/tmp/test_open_file.txt", O_RDONLY);
     if (fd>0) {
